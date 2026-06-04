@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sunniside Cornerstone Church</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --crimson: #8B1A1A;
+    --crimson-deep: #5C0E0E;
+    --crimson-light: #B02020;
+    --gold: #C9A84C;
+    --gold-light: #E8C97A;
+    --gold-pale: #F5E9C8;
+    --ivory: #FAF7F0;
+    --warm-white: #FFFDF7;
+    --dark: #1A0A0A;
+    --text-dark: #2A1010;
+    --text-mid: #4A2020;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    background: var(--ivory);
+    color: var(--text-dark);
+    overflow-x: hidden;
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    background: var(--crimson-deep);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 30%, rgba(180,40,40,0.4) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 80% at 20% 80%, rgba(100,10,10,0.6) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 80% 20%, rgba(201,168,76,0.08) 0%, transparent 50%);
+  }
+
+  /* Geometric cross pattern background */
+  .hero-pattern {
+    position: absolute; inset: 0;
+    opacity: 0.04;
+    background-image:
+      repeating-linear-gradient(0deg, var(--gold) 0px, var(--gold) 1px, transparent 1px, transparent 60px),
+      repeating-linear-gradient(90deg, var(--gold) 0px, var(--gold) 1px, transparent 1px, transparent 60px);
+  }
+
+  .hero-content {
+    position: relative;
+    text-align: center;
+    z-index: 2;
+    padding: 2rem;
+    animation: fadeInUp 1.2s ease both;
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .cross-icon {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+    animation: fadeInUp 1s ease 0.2s both;
+  }
+
+  .cross-svg {
+    width: 60px; height: 80px;
+    filter: drop-shadow(0 0 20px rgba(201,168,76,0.5));
+  }
+
+  .hero-subtitle {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(0.65rem, 1.5vw, 0.85rem);
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    animation: fadeInUp 1s ease 0.3s both;
+  }
+
+  .hero-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(2.2rem, 7vw, 5.5rem);
+    font-weight: 700;
+    color: var(--warm-white);
+    line-height: 1.1;
+    letter-spacing: 0.02em;
+    text-shadow: 0 4px 30px rgba(0,0,0,0.4);
+    animation: fadeInUp 1s ease 0.4s both;
+  }
+
+  .hero-title span {
+    display: block;
+    color: var(--gold-light);
+  }
+
+  .hero-divider {
+    width: 120px; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 2rem auto;
+    animation: fadeInUp 1s ease 0.5s both;
+  }
+
+  .hero-verse {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    color: rgba(255,253,247,0.85);
+    max-width: 500px;
+    margin: 0 auto 0.5rem;
+    line-height: 1.6;
+    animation: fadeInUp 1s ease 0.6s both;
+  }
+
+  .hero-ref {
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    animation: fadeInUp 1s ease 0.7s both;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 3rem;
+    flex-wrap: wrap;
+    animation: fadeInUp 1s ease 0.9s both;
+  }
+
+  .btn-primary {
+    background: var(--gold);
+    color: var(--crimson-deep);
+    padding: 0.9rem 2.5rem;
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-weight: 600;
+  }
+
+  .btn-primary:hover {
+    background: var(--gold-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(201,168,76,0.4);
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--warm-white);
+    padding: 0.9rem 2.5rem;
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    border: 1px solid rgba(255,253,247,0.4);
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .btn-outline:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    transform: translateY(-2px);
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(255,253,247,0.4);
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    animation: fadeInUp 1s ease 1.2s both;
+  }
+
+  .scroll-line {
+    width: 1px; height: 40px;
+    background: linear-gradient(to bottom, rgba(201,168,76,0.6), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.4; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.3); }
+  }
+
+  /* ===== NAV ===== */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1.2rem 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.4s ease;
+  }
+
+  nav.scrolled {
+    background: rgba(92,14,14,0.97);
+    backdrop-filter: blur(10px);
+    padding: 0.8rem 3rem;
+    box-shadow: 0 4px 30px rgba(0,0,0,0.3);
+  }
+
+  .nav-logo {
+    font-family: 'Cinzel', serif;
+    font-size: 0.9rem;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    color: rgba(255,253,247,0.8);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+
+  .nav-links a:hover { color: var(--gold); }
+
+  /* ===== SECTIONS ===== */
+  section { padding: 6rem 2rem; }
+
+  .section-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.5em;
+    color: var(--crimson);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--crimson-deep);
+    margin-bottom: 1.5rem;
+  }
+
+  .section-title em {
+    font-style: italic;
+    color: var(--crimson-light);
+  }
+
+  .gold-line {
+    width: 60px; height: 2px;
+    background: var(--gold);
+    margin-bottom: 2rem;
+  }
+
+  /* ===== WELCOME ===== */
+  .welcome {
+    background: var(--warm-white);
+    position: relative;
+  }
+
+  .welcome::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--crimson-deep), var(--gold), var(--crimson-deep));
+  }
+
+  .welcome-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: center;
+  }
+
+  .welcome-text p {
+    font-size: 1.15rem;
+    line-height: 1.9;
+    color: var(--text-mid);
+    margin-bottom: 1.2rem;
+  }
+
+  .welcome-highlight {
+    font-size: 1.4rem;
+    font-style: italic;
+    color: var(--crimson);
+    line-height: 1.7;
+    padding-left: 1.5rem;
+    border-left: 3px solid var(--gold);
+    margin: 2rem 0;
+  }
+
+  .welcome-visual {
+    position: relative;
+  }
+
+  .welcome-card {
+    background: var(--crimson-deep);
+    padding: 3rem;
+    color: var(--warm-white);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .welcome-card::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 150px; height: 150px;
+    border: 2px solid rgba(201,168,76,0.2);
+    transform: rotate(45deg);
+  }
+
+  .welcome-card::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: -40px;
+    width: 150px; height: 150px;
+    border: 2px solid rgba(201,168,76,0.2);
+    transform: rotate(45deg);
+  }
+
+  .welcome-card-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+  }
+
+  .welcome-card-verse {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-style: italic;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .welcome-card-ref {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+  }
+
+  /* ===== SERVICES ===== */
+  .services {
+    background: linear-gradient(135deg, var(--crimson-deep) 0%, #3D0808 100%);
+    color: var(--warm-white);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .services::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      repeating-linear-gradient(45deg, rgba(201,168,76,0.03) 0px, rgba(201,168,76,0.03) 1px, transparent 1px, transparent 40px),
+      repeating-linear-gradient(-45deg, rgba(201,168,76,0.03) 0px, rgba(201,168,76,0.03) 1px, transparent 1px, transparent 40px);
+  }
+
+  .services-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .services-header {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  .services-header .section-label { color: var(--gold); }
+  .services-header .section-title { color: var(--warm-white); }
+  .services-header .gold-line { margin: 0 auto 2rem; }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+
+  .service-card {
+    border: 1px solid rgba(201,168,76,0.25);
+    padding: 3rem;
+    text-align: center;
+    position: relative;
+    transition: all 0.4s ease;
+    background: rgba(255,255,255,0.03);
+  }
+
+  .service-card:hover {
+    background: rgba(201,168,76,0.08);
+    border-color: var(--gold);
+    transform: translateY(-4px);
+  }
+
+  .service-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 60px; height: 2px;
+    background: var(--gold);
+    transition: width 0.4s ease;
+  }
+
+  .service-card:hover::before { width: 120px; }
+
+  .service-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    display: block;
+  }
+
+  .service-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+  }
+
+  .service-time {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-style: italic;
+    color: var(--warm-white);
+    margin-bottom: 0.5rem;
+  }
+
+  .service-freq {
+    font-size: 0.95rem;
+    color: rgba(255,253,247,0.6);
+    letter-spacing: 0.05em;
+  }
+
+  .services-welcome {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 3rem;
+    border-top: 1px solid rgba(201,168,76,0.2);
+  }
+
+  .services-welcome p {
+    font-family: 'Cinzel', serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+
+  /* ===== ABOUT ===== */
+  .about {
+    background: var(--ivory);
+    position: relative;
+  }
+
+  .about-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 5rem;
+    align-items: start;
+  }
+
+  .about-text p {
+    font-size: 1.1rem;
+    line-height: 1.9;
+    color: var(--text-mid);
+    margin-bottom: 1.2rem;
+  }
+
+  .values-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .value-item {
+    padding: 1.5rem;
+    border-left: 3px solid var(--gold);
+    background: var(--warm-white);
+  }
+
+  .value-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    color: var(--crimson);
+    margin-bottom: 0.5rem;
+  }
+
+  .value-desc {
+    font-size: 0.9rem;
+    color: var(--text-mid);
+    line-height: 1.6;
+  }
+
+  .leaders-panel {
+    background: var(--crimson-deep);
+    padding: 2.5rem;
+    color: var(--warm-white);
+  }
+
+  .leaders-panel-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    margin-bottom: 2rem;
+    text-transform: uppercase;
+  }
+
+  .leader-item {
+    padding: 1.5rem 0;
+    border-bottom: 1px solid rgba(201,168,76,0.2);
+  }
+
+  .leader-item:last-child { border-bottom: none; }
+
+  .leader-avatar {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--crimson-light), var(--gold));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    color: white;
+    margin-bottom: 1rem;
+  }
+
+  .leader-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .leader-phone {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .leader-phone:hover { color: var(--gold-light); }
+
+  /* ===== CONTACT ===== */
+  .contact {
+    background: var(--warm-white);
+    position: relative;
+  }
+
+  .contact::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--crimson-deep), var(--gold), var(--crimson-deep));
+  }
+
+  .contact-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+
+  .contact-card {
+    padding: 2.5rem 1.5rem;
+    border: 1px solid rgba(139,26,26,0.15);
+    background: var(--ivory);
+    transition: all 0.3s ease;
+  }
+
+  .contact-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(139,26,26,0.1);
+  }
+
+  .contact-icon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 1rem;
+  }
+
+  .contact-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: var(--crimson);
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+  }
+
+  .contact-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    color: var(--text-dark);
+    line-height: 1.5;
+  }
+
+  .contact-value a {
+    color: var(--crimson);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .contact-value a:hover { color: var(--gold); }
+
+  /* ===== FOOTER ===== */
+  footer {
+    background: var(--dark);
+    color: rgba(255,253,247,0.5);
+    text-align: center;
+    padding: 3rem 2rem;
+  }
+
+  .footer-cross {
+    display: block;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    opacity: 0.4;
+  }
+
+  .footer-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+    opacity: 0.7;
+  }
+
+  .footer-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    nav.scrolled { padding: 0.7rem 1.5rem; }
+    .nav-links { display: none; }
+
+    section { padding: 4rem 1.5rem; }
+
+    .welcome-inner,
+    .about-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+
+    .services-grid { grid-template-columns: 1fr; }
+
+    .contact-grid { grid-template-columns: 1fr; gap: 1rem; }
+
+    .values-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ===== SCROLL ANIMATIONS ===== */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+</style>
+</head>
+<body>
+
+<!-- ===== NAV ===== -->
+<nav id="mainNav">
+  <a href="#" class="nav-logo">✝ SCC</a>
+  <ul class="nav-links">
+    <li><a href="#welcome">Welcome</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-pattern"></div>
+  <div class="hero-content">
+    <div class="cross-icon">
+      <svg class="cross-svg" viewBox="0 0 60 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="24" y="0" width="12" height="80" fill="#C9A84C" rx="1"/>
+        <rect x="0" y="18" width="60" height="12" fill="#C9A84C" rx="1"/>
+      </svg>
+    </div>
+    <span class="hero-subtitle">Established in Faith</span>
+    <h1 class="hero-title">
+      Sunniside<span>Cornerstone</span>Church
+    </h1>
+    <div class="hero-divider"></div>
+    <p class="hero-verse">"I am the way, the truth, and the life."</p>
+    <p class="hero-ref">— John 14:6</p>
+    <div class="hero-cta">
+      <a href="#services" class="btn-primary">Join Us This Sunday</a>
+      <a href="#contact" class="btn-outline">Get In Touch</a>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- ===== WELCOME ===== -->
+<section class="welcome" id="welcome">
+  <div class="welcome-inner">
+    <div class="welcome-text reveal">
+      <span class="section-label">You Belong Here</span>
+      <h2 class="section-title">A Place of <em>Grace</em><br>& Community</h2>
+      <div class="gold-line"></div>
+      <p>Welcome to Sunniside Cornerstone Church — a warm, welcoming community of believers rooted in the Word of God. Whether you're exploring faith for the first time or looking for a church family to call home, our doors are always open.</p>
+      <blockquote class="welcome-highlight">
+        "All Are Welcome" — not just as a statement on our sign, but as the heartbeat of everything we do.
+      </blockquote>
+      <p>We gather together to worship, grow, and serve — united by the love of Christ and a shared calling to make His name known in our community and beyond.</p>
+    </div>
+    <div class="welcome-visual reveal reveal-delay-2">
+      <div class="welcome-card">
+        <p class="welcome-card-title">✝ Our Foundation</p>
+        <p class="welcome-card-verse">"Jesus said, 'I am the way, the truth, and the life. No one comes to the Father except through me.'"</p>
+        <p class="welcome-card-ref">John 14:6 — The Cornerstone of our Faith</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SERVICES ===== -->
+<section class="services" id="services">
+  <div class="services-inner">
+    <div class="services-header reveal">
+      <span class="section-label">Gather With Us</span>
+      <h2 class="section-title" style="color: var(--warm-white);">Services &<em> Gatherings</em></h2>
+      <div class="gold-line"></div>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal reveal-delay-1">
+        <span class="service-icon">🙏</span>
+        <p class="service-name">Worship Service</p>
+        <p class="service-time">4:00 PM</p>
+        <p class="service-freq">Every Sunday</p>
+      </div>
+      <div class="service-card reveal reveal-delay-2">
+        <span class="service-icon">👨‍👩‍👧‍👦</span>
+        <p class="service-name">Family Service</p>
+        <p class="service-time">6:00 PM</p>
+        <p class="service-freq">Last Saturday of the Month</p>
+      </div>
+    </div>
+    <div class="services-welcome reveal">
+      <p>✦ All Are Welcome ✦</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ABOUT ===== -->
+<section class="about" id="about">
+  <div class="about-inner">
+    <div class="about-text reveal">
+      <span class="section-label">Who We Are</span>
+      <h2 class="section-title">Built on the <em>Cornerstone</em></h2>
+      <div class="gold-line"></div>
+      <p>At Sunniside Cornerstone Church, our name reflects our conviction: Christ is the cornerstone on which everything is built. We are a Bible-believing, Spirit-filled congregation committed to authentic worship, biblical teaching, and genuine fellowship.</p>
+      <p>We welcome people from all walks of life — families, singles, young and old — because we believe the Gospel is for everyone. Our heart is to see lives transformed by the power of Jesus Christ.</p>
+
+      <div class="values-grid">
+        <div class="value-item">
+          <p class="value-title">✝ Authentic Worship</p>
+          <p class="value-desc">We encounter God through heartfelt, Spirit-led worship each week.</p>
+        </div>
+        <div class="value-item">
+          <p class="value-title">📖 Biblical Teaching</p>
+          <p class="value-desc">God's Word is our foundation and guide for all of life.</p>
+        </div>
+        <div class="value-item">
+          <p class="value-title">🤝 Community</p>
+          <p class="value-desc">We do life together — supporting, encouraging, and loving one another.</p>
+        </div>
+        <div class="value-item">
+          <p class="value-title">🌍 Outreach</p>
+          <p class="value-desc">We are called to share the good news with our neighbourhood and beyond.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal reveal-delay-2">
+      <div class="leaders-panel">
+        <p class="leaders-panel-title">✦ Church Leadership</p>
+
+        <div class="leader-item">
+          <div class="leader-avatar">I</div>
+          <p class="leader-name">Bro Isaac</p>
+          <a href="tel:07447487474" class="leader-phone">📞 07447 487 474</a>
+        </div>
+
+        <div class="leader-item">
+          <div class="leader-avatar">R</div>
+          <p class="leader-name">Bro Rajiv</p>
+          <a href="tel:07872935094" class="leader-phone">📞 07872 935 094</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONTACT ===== -->
+<section class="contact" id="contact">
+  <div class="contact-inner">
+    <div class="reveal">
+      <span class="section-label">Reach Out</span>
+      <h2 class="section-title">Come As <em>You Are</em></h2>
+      <div class="gold-line" style="margin: 0 auto 1.5rem;"></div>
+      <p style="font-size: 1.1rem; color: var(--text-mid); line-height: 1.8;">We would love to hear from you. Whether you have a question, need prayer, or simply want to find out more about our church — don't hesitate to reach out.</p>
+    </div>
+    <!--
+    <div class="contact-grid">
+      <div class="contact-card reveal reveal-delay-1">
+        <span class="contact-icon">📞</span>
+        <p class="contact-label">Call Bro Isaac</p>
+        <p class="contact-value"><a href="tel:07447487474">07447 487 474</a></p>
+      </div>
+      <div class="contact-card reveal reveal-delay-2">
+        <span class="contact-icon">📞</span>
+        <p class="contact-label">Call Bro Rajiv</p>
+        <p class="contact-value"><a href="tel:07872935094">07872 935 094</a></p>
+      </div>
+      <div class="contact-card reveal reveal-delay-3">
+        <span class="contact-icon">🕊️</span>
+        <p class="contact-label">Sunday Service</p>
+        <p class="contact-value">Every Sunday<br>4:00 PM</p>
+      </div>
+    </div>
+    -->
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <span class="footer-cross">✝</span>
+  <p class="footer-name">Sunniside Cornerstone Church</p>
+  <p class="footer-text">Jesus said, "I am the way, the truth, and the life." — John 14:6</p>
+  <p style="margin-top: 1rem; font-size: 0.8rem;">All Are Welcome &nbsp;·&nbsp; Worship Every Sunday 4PM &nbsp;·&nbsp; Family Service Last Saturday 6PM</p>
+</footer>
+
+<script>
+  // Sticky nav
+  const nav = document.getElementById('mainNav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 80);
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
