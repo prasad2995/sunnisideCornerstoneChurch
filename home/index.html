@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sunniside Cornerstone Church</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<!-- ===== NAV ===== -->
+<nav id="mainNav">
+  <a href="#" class="nav-logo">✝ SCC</a>
+  <ul class="nav-links">
+    <li><a href="#welcome">Welcome</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#events">Events</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#prayer">Prayer Request</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-toggle" id="navToggle">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-pattern"></div>
+  <div class="hero-content">
+    <div class="cross-icon">
+      <svg class="cross-svg" viewBox="0 0 60 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="24" y="0" width="12" height="80" fill="#C9A84C" rx="1"/>
+        <rect x="0" y="18" width="60" height="12" fill="#C9A84C" rx="1"/>
+      </svg>
+    </div>
+    <span class="hero-subtitle">Established in Faith</span>
+    <h1 class="hero-title">
+      Sunniside<span>Cornerstone</span>Church
+    </h1>
+    <div class="hero-divider"></div>
+    <p class="hero-verse">"I am the way, the truth, and the life."</p>
+    <p class="hero-ref">— John 14:6</p>
+    <div class="hero-cta">
+      <a href="#services" class="btn-primary">Join Us This Sunday</a>
+      <a href="#contact" class="btn-outline">Get In Touch</a>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- ===== WELCOME ===== -->
+<section class="welcome" id="welcome">
+  <div class="welcome-inner">
+    <div class="welcome-text reveal">
+      <span class="section-label">You Belong Here</span>
+      <h2 class="section-title">A Place of <em>Grace</em><br>& Community</h2>
+      <div class="gold-line"></div>
+      <p>Welcome to Sunniside Cornerstone Church — a warm, welcoming community of believers rooted in the Word of God. Whether you're exploring faith for the first time or looking for a church family to call home, our doors are always open.</p>
+      <blockquote class="welcome-highlight">
+        "All Are Welcome" — not just as a statement on our sign, but as the heartbeat of everything we do.
+      </blockquote>
+      <p>We gather together to worship, grow, and serve — united by the love of Christ and a shared calling to make His name known in our community and beyond.</p>
+    </div>
+    <div class="welcome-visual reveal reveal-delay-2">
+      <div class="welcome-card">
+        <p class="welcome-card-title">✝ Our Foundation</p>
+        <p class="welcome-card-verse">"Jesus said, 'I am the way, the truth, and the life. No one comes to the Father except through me.'"</p>
+        <p class="welcome-card-ref">John 14:6 — The Cornerstone of our Faith</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SERVICES ===== -->
+<section class="services" id="services">
+  <div class="services-inner">
+    <div class="services-header reveal">
+      <span class="section-label">Gather With Us</span>
+      <h2 class="section-title" style="color: var(--warm-white);">Services &<em> Gatherings</em></h2>
+      <div class="gold-line"></div>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal reveal-delay-1">
+        <span class="service-icon">🙏</span>
+        <p class="service-name">Worship Service</p>
+        <p class="service-time">4:00 PM</p>
+        <p class="service-freq">Every Sunday</p>
+      </div>
+      <div class="service-card reveal reveal-delay-2">
+        <span class="service-icon">👨‍👩‍👧‍👦</span>
+        <p class="service-name">Family Service</p>
+        <p class="service-time">6:00 PM</p>
+        <p class="service-freq">Last Saturday of the Month</p>
+      </div>
+    </div>
+    <div class="services-welcome reveal">
+      <p>✦ All Are Welcome ✦</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== UPCOMING EVENTS ===== -->
+<section class="events" id="events">
+  <div class="events-inner">
+    <div class="reveal">
+      <span class="section-label">What's Happening</span>
+      <h2 class="section-title">Upcoming <em>Events</em></h2>
+      <div class="gold-line"></div>
+    </div>
+    <div class="events-grid" id="eventsGrid">
+      <!-- Loaded dynamically via app.js -->
+    </div>
+  </div>
+</section>
+
+<!-- ===== GALLERY ===== -->
+<section class="gallery" id="gallery" style="background: var(--ivory); border-top: 1px solid rgba(139, 26, 26, 0.05);">
+  <div class="gallery-inner" style="max-width: 1200px; margin: 0 auto;">
+    <div class="reveal">
+      <span class="section-label">Our Moments</span>
+      <h2 class="section-title">Photo <em>Gallery</em></h2>
+      <div class="gold-line"></div>
+    </div>
+    <div id="gallerySections">
+      <!-- Grouped sections and images loaded dynamically -->
+    </div>
+  </div>
+</section>
+
+<!-- ===== ABOUT ===== -->
+<section class="about" id="about">
+  <div class="about-inner">
+    <div class="about-text reveal">
+      <span class="section-label">Who We Are</span>
+      <h2 class="section-title">Built on the <em>Cornerstone</em></h2>
+      <div class="gold-line"></div>
+      <p>At Sunniside Cornerstone Church, our name reflects our conviction: Christ is the cornerstone on which everything is built. We are a Bible-believing, Spirit-filled congregation committed to authentic worship, biblical teaching, and genuine fellowship.</p>
+      <p>We welcome people from all walks of life — families, singles, young and old — because we believe the Gospel is for everyone. Our heart is to see lives transformed by the power of Jesus Christ.</p>
+
+      <div class="values-grid">
+        <div class="value-item">
+          <p class="value-title">✝ Authentic Worship</p>
+          <p class="value-desc">We encounter God through heartfelt, Spirit-led worship each week.</p>
+        </div>
+        <div class="value-item">
+          <p class="value-title">📖 Biblical Teaching</p>
+          <p class="value-desc">God's Word is our foundation and guide for all of life.</p>
+        </div>
+        <div class="value-item">
+          <p class="value-title">🤝 Community</p>
+          <p class="value-desc">We do life together — supporting, encouraging, and loving one another.</p>
+        </div>
+        <div class="value-item">
+          <p class="value-title">🌍 Outreach</p>
+          <p class="value-desc">We are called to share the good news with our neighbourhood and beyond.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal reveal-delay-2">
+      <div class="leaders-panel">
+        <p class="leaders-panel-title">✦ Church Leadership</p>
+
+        <div class="leader-item">
+          <div class="leader-avatar">I</div>
+          <p class="leader-name">Bro Isaac</p>
+          <a href="tel:07447487474" class="leader-phone">📞 07447 487 474</a>
+        </div>
+
+        <div class="leader-item">
+          <div class="leader-avatar">R</div>
+          <p class="leader-name">Bro Rajiv</p>
+          <a href="tel:07872935094" class="leader-phone">📞 07872 935 094</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PRAYER REQUESTS ===== -->
+<section class="prayer-requests" id="prayer">
+  <div class="prayer-inner">
+    <div class="reveal text-center" style="text-align: center;">
+      <span class="section-label">How Can We Pray For You?</span>
+      <h2 class="section-title">Submit a <em>Prayer Request</em></h2>
+      <div class="gold-line" style="margin: 0 auto 1.5rem;"></div>
+      <p style="font-size: 1.1rem; color: var(--text-mid); line-height: 1.8;">We believe in the power of prayer. Share your request below, and our leadership and prayer team will lift you up in prayer.</p>
+    </div>
+    
+    <div class="prayer-form-container reveal">
+      <form id="prayerForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="form-label" for="prayerName">Name *</label>
+            <input type="text" id="prayerName" class="form-control" placeholder="Your Full Name" maxlength="50" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="prayerPhone">Phone Number *</label>
+            <input type="tel" id="prayerPhone" class="form-control" placeholder="e.g. 07123456789" pattern="^\s*(?:\+44|0)\s*(?:(?:\d\s*){9,10})\s*$" title="Please enter a valid UK phone number (e.g. 07123456789 or +44 7123 456 789)" required>
+          </div>
+          <div class="form-group full-width">
+            <label class="form-label" for="prayerAddress">Address *</label>
+            <input type="text" id="prayerAddress" class="form-control" placeholder="Your Address" maxlength="100" required>
+          </div>
+          <div class="form-group full-width">
+            <label class="form-label" for="prayerText">Prayer Request *</label>
+            <textarea id="prayerText" class="form-control" placeholder="How can we pray for you today?" maxlength="1000" required></textarea>
+          </div>
+        </div>
+        <button type="submit" class="btn-primary form-submit-btn">Submit Prayer Request</button>
+      </form>
+      <div id="formMessage" class="form-message"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONTACT ===== -->
+<section class="contact" id="contact">
+  <div class="contact-inner">
+    <div class="reveal" style="text-align: center;">
+      <span class="section-label">Reach Out</span>
+      <h2 class="section-title">Come As <em>You Are</em></h2>
+      <div class="gold-line" style="margin: 0 auto 1.5rem;"></div>
+      <p style="font-size: 1.1rem; color: var(--text-mid); line-height: 1.8;">We would love to hear from you. Whether you have a question, need prayer, or simply want to find out more about our church — don't hesitate to reach out.</p>
+    </div>
+
+    <div class="contact-layout">
+      <div class="contact-info reveal reveal-delay-1">
+        <div class="contact-card address-card" style="height: 100%; display: flex; flex-direction: column; justify-content: center;">
+          <span class="contact-icon">📍</span>
+          <p class="contact-label">Church Location</p>
+          <p class="contact-value" style="font-size: 1.25rem; font-weight: 600; color: var(--crimson-deep);">
+            Sunniside Cornerstone Church<br>
+            Sunniside, Gateshead, Tyne & Wear<br>
+            NE16 5LL
+          </p>
+        </div>
+      </div>
+
+      <div class="map-container reveal reveal-delay-2">
+        <div class="map-box">
+          <!-- Embed Google Maps with Sunniside Cornerstone Church location or area -->
+          <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2294.0204780517596!2d-1.7013867841028784!3d54.902672980336214!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x487dd5e4f4fb76d9%3A0xe54129bb88bb256b!2sSunniside%20Cornerstone%20Church!5e0!3m2!1sen!2suk!4v1700000000000!5m2!1sen!2suk" 
+            allowfullscreen="" 
+            loading="lazy" 
+            referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+          <a href="https://maps.app.goo.gl/7cPPAEmoN3wT3ZLJ6" target="_blank" class="btn-primary map-overlay-btn">Open in Google Maps</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <span class="footer-cross">✝</span>
+  <p class="footer-name">Sunniside Cornerstone Church</p>
+  <p class="footer-text">Jesus said, "I am the way, the truth, and the life." — John 14:6</p>
+  <p style="margin-top: 1rem; font-size: 0.8rem;">All Are Welcome &nbsp;·&nbsp; Worship Every Sunday 4PM &nbsp;·&nbsp; Family Service Last Saturday 6PM</p>
+</footer>
+
+<script type="module" src="../app.js"></script>
+</body>
+</html>

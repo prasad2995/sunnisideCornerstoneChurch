@@ -1,0 +1,1510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - SCC</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Cinzel:wght@600;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --crimson: #8B1A1A;
+      --crimson-deep: #5C0E0E;
+      --gold: #C9A84C;
+      --gold-light: #E8C97A;
+      --ivory: #FAF7F0;
+      --dark: #1A0A0A;
+      --text-dark: #2A1010;
+      --white: #FFFFFF;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: var(--ivory);
+      color: var(--text-dark);
+      min-height: 100vh;
+    }
+
+    /* ===== LOGIN OVERLAY ===== */
+    .login-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(26, 10, 10, 0.95);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .login-popup {
+      background: var(--white);
+      border: 1px solid var(--gold);
+      padding: 3rem;
+      width: 100%;
+      max-width: 450px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+      text-align: center;
+    }
+
+    .login-popup h2 {
+      font-family: 'Cinzel', serif;
+      color: var(--crimson-deep);
+      margin-bottom: 2rem;
+      font-size: 1.8rem;
+    }
+
+    .login-group {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+      margin-bottom: 1.5rem;
+      gap: 0.5rem;
+    }
+
+    .login-group label {
+      font-family: 'Cinzel', serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      color: var(--crimson);
+    }
+
+    .login-control {
+      padding: 0.8rem 1rem;
+      border: 1px solid rgba(139, 26, 26, 0.2);
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+
+    .login-control:focus {
+      border-color: var(--gold);
+    }
+
+    .login-btn {
+      width: 100%;
+      background: var(--crimson-deep);
+      color: var(--white);
+      border: none;
+      padding: 0.9rem;
+      font-family: 'Cinzel', serif;
+      font-size: 0.9rem;
+      letter-spacing: 0.15em;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 1rem;
+    }
+
+    .login-btn:hover {
+      background: var(--crimson);
+      box-shadow: 0 5px 15px rgba(139, 26, 26, 0.3);
+    }
+
+    .login-error {
+      color: red;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      display: none;
+    }
+
+    /* ===== DASHBOARD LAYOUT ===== */
+    .dashboard {
+      display: none;
+    }
+
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      cursor: pointer;
+      z-index: 110;
+    }
+
+    .nav-toggle span {
+      width: 25px;
+      height: 2px;
+      background: var(--gold);
+      transition: all 0.3s;
+    }
+
+    header {
+      background: var(--crimson-deep);
+      color: var(--white);
+      padding: 1.5rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 3px solid var(--gold);
+    }
+
+    header h1 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.5rem;
+      line-height: 1.25;
+      letter-spacing: 0.1em;
+    }
+
+    header h1 span {
+      display: block;
+      color: var(--gold-light);
+      font-size: 0.95rem;
+      margin-top: 0.2rem;
+    }
+
+    .logout-btn {
+      background: transparent;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      padding: 0.5rem 1.2rem;
+      cursor: pointer;
+      font-family: 'Cinzel', serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      transition: all 0.3s;
+      white-space: nowrap;
+    }
+
+    .logout-btn:hover {
+      background: var(--gold);
+      color: var(--crimson-deep);
+    }
+
+    /* ===== TABS ===== */
+    .tabs-nav {
+      max-width: 1000px;
+      margin: 2rem auto 0;
+      padding: 0 2rem;
+      display: flex;
+      gap: 1rem;
+      border-bottom: 2px solid rgba(139, 26, 26, 0.15);
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      padding: 1rem 1.5rem;
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      color: var(--text-dark);
+      transition: all 0.3s;
+      border-bottom: 3px solid transparent;
+      font-weight: 600;
+    }
+
+    .tab-btn:hover {
+      color: var(--crimson);
+    }
+
+    .tab-btn.active {
+      color: var(--crimson);
+      border-bottom-color: var(--crimson);
+    }
+
+    .main-content {
+      max-width: 1000px;
+      margin: 2rem auto 4rem;
+      padding: 0 2rem;
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .panel {
+      background: var(--white);
+      border: 1px solid rgba(139, 26, 26, 0.1);
+      padding: 3rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+    }
+
+    .panel-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.3rem;
+      color: var(--crimson-deep);
+      margin-bottom: 2rem;
+      border-bottom: 2px solid var(--gold);
+      padding-bottom: 0.5rem;
+    }
+
+    /* Event Form */
+    .event-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .form-group label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--crimson);
+    }
+
+    .form-control {
+      padding: 0.8rem;
+      border: 1px solid rgba(0,0,0,0.15);
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    .form-control:focus {
+      border-color: var(--gold);
+    }
+
+    textarea.form-control {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .submit-btn {
+      background: var(--gold);
+      color: var(--crimson-deep);
+      border: none;
+      padding: 0.9rem;
+      font-family: 'Cinzel', serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .submit-btn:hover {
+      background: var(--gold-light);
+    }
+
+    /* Data List & Cards */
+    .data-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .data-card {
+      background: var(--ivory);
+      border-left: 4px solid var(--crimson);
+      padding: 1.8rem;
+      position: relative;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+    }
+
+    .data-card.event-item {
+      border-left-color: var(--gold);
+    }
+
+    .data-card h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+      color: var(--crimson-deep);
+    }
+
+    .data-card p {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 0.5rem;
+    }
+
+    .data-card .meta {
+      font-size: 0.8rem;
+      color: gray;
+      display: block;
+      margin-top: 0.5rem;
+    }
+
+    .action-btn-group {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .action-btn {
+      background: transparent;
+      padding: 0.4rem 0.8rem;
+      font-size: 0.72rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: 'Cinzel', serif;
+      font-weight: 600;
+    }
+
+    .action-btn.delete {
+      border: 1px solid red;
+      color: red;
+    }
+
+    .action-btn.delete:hover {
+      background: red;
+      color: white;
+    }
+
+    .action-btn.edit {
+      border: 1px solid #4a90e2;
+      color: #4a90e2;
+    }
+
+    .action-btn.edit:hover {
+      background: #4a90e2;
+      color: white;
+    }
+
+    .action-btn.archive {
+      border: 1px solid var(--crimson);
+      color: var(--crimson);
+    }
+
+    .action-btn.archive:hover {
+      background: var(--crimson);
+      color: white;
+    }
+
+    .action-btn.restore {
+      border: 1px solid green;
+      color: green;
+    }
+
+    .action-btn.restore:hover {
+      background: green;
+      color: white;
+    }
+
+    .prayer-text-block {
+      background: white;
+      border: 1px dashed rgba(0,0,0,0.1);
+      padding: 1rem;
+      margin-top: 0.8rem;
+      font-style: italic;
+      line-height: 1.6;
+    }
+
+    .events-grid-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    @media (max-width: 950px) {
+      .events-grid-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        padding: 1.2rem 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      
+      header h1 {
+        font-size: 1.1rem;
+      }
+
+      .logout-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.7rem;
+      }
+
+      #adminNavToggle {
+        display: flex;
+        order: -1;
+      }
+
+      .tabs-nav {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 80%;
+        max-width: 300px;
+        height: 100vh;
+        background: rgba(74, 14, 14, 0.98);
+        backdrop-filter: blur(15px);
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        gap: 2rem;
+        transition: all 0.3s ease;
+        box-shadow: 10px 0 30px rgba(0,0,0,0.3);
+        z-index: 105;
+        padding: 6rem 2.5rem 2rem;
+        margin: 0;
+        border-bottom: none;
+      }
+
+      .tabs-nav.active {
+        left: 0;
+      }
+
+      .tab-btn {
+        width: 100%;
+        text-align: left;
+        color: rgba(255, 253, 247, 0.85);
+        padding: 1rem;
+        font-size: 0.9rem;
+        border-bottom: 3px solid transparent;
+      }
+
+      .tab-btn.active {
+        color: var(--gold);
+        border-bottom-color: var(--gold);
+      }
+
+      #adminNavToggle.active span:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 6px);
+      }
+
+      #adminNavToggle.active span:nth-child(2) {
+        opacity: 0;
+      }
+
+      #adminNavToggle.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(6px, -7px);
+      }
+
+      .main-content {
+        padding: 0 1rem;
+        margin-top: 1rem;
+      }
+      .panel {
+        padding: 1.5rem;
+      }
+      .action-btn-group {
+        position: static;
+        margin-top: 1.2rem;
+        display: flex;
+        justify-content: flex-start;
+      }
+    }
+
+    /* ===== CUSTOM ALERT & CONFIRM POPUP ===== */
+    .custom-alert-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(26, 10, 10, 0.7);
+      backdrop-filter: blur(5px);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeInAlert 0.3s ease;
+    }
+
+    .custom-alert-box {
+      background: var(--white);
+      border: 1px solid var(--gold);
+      padding: 2.5rem;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 20px 45px rgba(26, 10, 10, 0.3);
+      text-align: center;
+      border-radius: 4px;
+      animation: scaleUpAlert 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes fadeInAlert {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes scaleUpAlert {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .custom-alert-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .custom-alert-message {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--text-dark);
+      margin-bottom: 1.5rem;
+      font-weight: 500;
+    }
+
+    .custom-alert-btn {
+      background: var(--gold);
+      color: var(--crimson-deep);
+      border: none;
+      padding: 0.75rem 2rem;
+      font-family: 'Cinzel', serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      cursor: pointer;
+      transition: all 0.3s;
+      border-radius: 2px;
+    }
+
+    .custom-alert-btn:hover {
+      background: var(--gold-light);
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== LOGIN OVERLAY ===== -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-popup">
+    <h2>Admin Portal</h2>
+    <form id="loginForm">
+      <div class="login-group">
+        <label for="username">Username</label>
+        <input type="email" id="username" class="login-control" required placeholder="admin@sunnisidecornerstonechurch.org.uk">
+      </div>
+      <div class="login-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" class="login-control" required placeholder="••••••••">
+      </div>
+      <button type="submit" class="login-btn">Log In</button>
+      <div class="login-error" id="loginError">Invalid credentials. Please try again.</div>
+    </form>
+  </div>
+</div>
+
+<!-- ===== DASHBOARD ===== -->
+<div class="dashboard" id="dashboard">
+  <header>
+    <div class="nav-toggle" id="adminNavToggle">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <h1>SCC <span>Admin Dashboard</span></h1>
+    <button class="logout-btn" id="logoutBtn">Log Out</button>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <div class="tabs-nav">
+    <button class="tab-btn active" data-tab="prayer-requests">Prayer Requests</button>
+    <button class="tab-btn" data-tab="add-event-tab">Add New Event</button>
+    <button class="tab-btn" data-tab="current-events-tab">Current Events</button>
+    <button class="tab-btn" data-tab="images-tab">Images</button>
+    <button class="tab-btn" data-tab="archive">Archive</button>
+  </div>
+
+  <main class="main-content">
+    
+    <!-- Tab 1: Prayer Requests -->
+    <div class="tab-panel active" id="prayer-requests">
+      <div class="panel">
+        <h2 class="panel-title">Available Prayer Requests</h2>
+        <div class="data-list" id="prayerList">
+          <!-- Loaded dynamically -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 2: Add New Event -->
+    <div class="tab-panel" id="add-event-tab">
+      <div class="panel">
+        <h2 class="panel-title">Add New Event</h2>
+        <form id="eventForm" class="event-form">
+          <div class="form-group">
+            <label for="eventTitle">Event Title *</label>
+            <input type="text" id="eventTitle" class="form-control" required placeholder="e.g. Youth Prayer Night">
+          </div>
+          <div class="form-group" id="eventDateContainer">
+            <label for="eventDate">Date & Time *</label>
+            <input type="datetime-local" id="eventDate" class="form-control" required>
+          </div>
+          <div class="form-group" id="lastSaturdayTimeContainer" style="display: none;">
+            <label for="lastSaturdayTime">Event Time (Last Saturday of Month) *</label>
+            <input type="time" id="lastSaturdayTime" class="form-control" value="18:00">
+          </div>
+          <div class="form-group">
+            <label for="eventLocation">Location</label>
+            <input type="text" id="eventLocation" class="form-control" placeholder="e.g. Main Sanctuary">
+          </div>
+          <div class="form-group">
+            <label for="eventImage">Event Image</label>
+            <input type="file" id="eventImage" class="form-control" accept="image/*">
+          </div>
+          <div class="form-group">
+            <label for="recurringOption">Recurring Option *</label>
+            <select id="recurringOption" class="form-control">
+              <option value="None">One-off Event</option>
+              <option value="Daily">Daily</option>
+              <option value="Weekly">Weekly</option>
+              <option value="Monthly">Monthly</option>
+              <option value="LastSaturday">Last Saturday of Month</option>
+            </select>
+          </div>
+          
+          <!-- Weekly Days list -->
+          <div class="form-group" id="weeklyDaysContainer" style="display: none;">
+            <label>Select Day(s) of the Week *</label>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 0.5rem; margin-top: 0.5rem;">
+              <label style="font-weight: 500; font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem;"><input type="checkbox" name="weeklyDay" value="Sunday"> Sun</label>
+              <label style="font-weight: 500; font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem;"><input type="checkbox" name="weeklyDay" value="Monday"> Mon</label>
+              <label style="font-weight: 500; font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem;"><input type="checkbox" name="weeklyDay" value="Tuesday"> Tue</label>
+              <label style="font-weight: 500; font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem;"><input type="checkbox" name="weeklyDay" value="Wednesday"> Wed</label>
+              <label style="font-weight: 500; font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem;"><input type="checkbox" name="weeklyDay" value="Thursday"> Thu</label>
+              <label style="font-weight: 500; font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem;"><input type="checkbox" name="weeklyDay" value="Friday"> Fri</label>
+              <label style="font-weight: 500; font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem;"><input type="checkbox" name="weeklyDay" value="Saturday"> Sat</label>
+            </div>
+          </div>
+
+          <!-- Monthly Date field -->
+          <div class="form-group" id="monthlyDateContainer" style="display: none;">
+            <label for="monthlyDate">Select Date of Month *</label>
+            <input type="number" id="monthlyDate" class="form-control" min="1" max="31" placeholder="e.g. 15">
+          </div>
+
+          <div class="form-group">
+            <label for="eventDesc">Description</label>
+            <textarea id="eventDesc" class="form-control" placeholder="Describe the event details..."></textarea>
+          </div>
+          <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+            <button type="submit" id="eventSubmitBtn" class="submit-btn" style="flex-grow: 1;">Add Event</button>
+            <button type="button" id="cancelEditBtn" class="submit-btn" style="background: #ccc; color: #333; display: none; width: auto; padding: 0 1.5rem; border: 1px solid rgba(0,0,0,0.15);">Cancel Edit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Tab 3: Current Events -->
+    <div class="tab-panel" id="current-events-tab">
+      <div class="panel">
+        <h2 class="panel-title">Current Events</h2>
+        <div class="data-list" id="eventsList">
+          <!-- Loaded dynamically -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 3: Images -->
+    <div class="tab-panel" id="images-tab">
+      <div class="events-grid-layout">
+        <!-- Section: Upload Image -->
+        <div class="panel">
+          <h2 class="panel-title">Upload Gallery Image</h2>
+          <form id="imageForm" class="event-form">
+            <div class="form-group">
+              <label for="imageSection">Section Name *</label>
+              <input type="text" id="imageSection" class="form-control" required placeholder="e.g. Easter Youth Night">
+            </div>
+            <div class="form-group">
+              <label for="imageFile">Select Image File(s) *</label>
+              <input type="file" id="imageFile" class="form-control" required accept="image/*" multiple>
+            </div>
+            <button type="submit" class="submit-btn">Upload Image</button>
+          </form>
+        </div>
+
+        <!-- Section: Manage Gallery -->
+        <div class="panel">
+          <h2 class="panel-title">Current Gallery Images</h2>
+          <div class="data-list" id="galleryAdminList">
+            <!-- Loaded dynamically -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab 4: Archive -->
+    <div class="tab-panel" id="archive">
+      <div class="panel">
+        <h2 class="panel-title">Archived Prayer Requests</h2>
+        <div class="data-list" id="archiveList">
+          <!-- Loaded dynamically -->
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script type="module">
+  import { neon } from 'https://cdn.jsdelivr.net/npm/@neondatabase/serverless@1.1.0/+esm';
+
+  const connectionString = 'postgresql://neondb_owner:npg_SjMo7p4tWdQV@ep-super-mouse-ab7uyr5w-pooler.eu-west-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require';
+  const sql = neon(connectionString, { disableWarningInBrowsers: true });
+
+  let isAuthenticated = sessionStorage.getItem('adminAuthenticated') === 'true';
+  let editingEventId = null;
+
+  const loginOverlay = document.getElementById('loginOverlay');
+  const dashboard = document.getElementById('dashboard');
+  const loginForm = document.getElementById('loginForm');
+  const loginError = document.getElementById('loginError');
+  const logoutBtn = document.getElementById('logoutBtn');
+  const eventSubmitBtn = document.getElementById('eventSubmitBtn');
+  const cancelEditBtn = document.getElementById('cancelEditBtn');
+
+  const eventForm = document.getElementById('eventForm');
+  const eventsList = document.getElementById('eventsList');
+  const prayerList = document.getElementById('prayerList');
+  const archiveList = document.getElementById('archiveList');
+  const imageForm = document.getElementById('imageForm');
+  const galleryAdminList = document.getElementById('galleryAdminList');
+
+  // Database auto migration helper
+  const runMigration = async () => {
+    try {
+      await sql.query('ALTER TABLE prayer_requests ADD COLUMN IF NOT EXISTS is_archived BOOLEAN DEFAULT FALSE;');
+      await sql.query('ALTER TABLE events ADD COLUMN IF NOT EXISTS image_data TEXT;');
+      await sql.query('ALTER TABLE events ADD COLUMN IF NOT EXISTS recurring_type VARCHAR(50);');
+      await sql.query('ALTER TABLE events ADD COLUMN IF NOT EXISTS recurring_details TEXT;');
+      await sql.query(`
+        CREATE TABLE IF NOT EXISTS gallery_images (
+          id SERIAL PRIMARY KEY,
+          section_name VARCHAR(255) NOT NULL,
+          image_data TEXT NOT NULL,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+    } catch (e) {
+      console.warn('Migration failed:', e);
+    }
+  };
+
+  // Check authentication status on load
+  if (isAuthenticated) {
+    showDashboard();
+  }
+
+  // Handle Login
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+
+    const ADMIN_USER = 'admin@sunnisidecornerstonechurch.org.uk';
+    const ADMIN_PASS = 'Admin123';
+
+    if (username === ADMIN_USER && password === ADMIN_PASS) {
+      isAuthenticated = true;
+      sessionStorage.setItem('adminAuthenticated', 'true');
+      showDashboard();
+    } else {
+      loginError.style.display = 'block';
+      loginError.textContent = 'Invalid username or password';
+    }
+  });
+
+  // Handle Logout
+  logoutBtn.addEventListener('click', () => {
+    sessionStorage.removeItem('adminAuthenticated');
+    isAuthenticated = false;
+    hideDashboard();
+  });
+
+  async function showDashboard() {
+    loginOverlay.style.display = 'none';
+    dashboard.style.display = 'block';
+    await runMigration();
+    loadEvents();
+    loadPrayerRequests();
+    loadGalleryImages();
+  }
+
+  function hideDashboard() {
+    loginOverlay.style.display = 'flex';
+    dashboard.style.display = 'none';
+  }
+
+  // Tab switching logic
+  const tabButtons = document.querySelectorAll('.tab-btn');
+  const tabPanels = document.querySelectorAll('.tab-panel');
+  const adminNavToggle = document.getElementById('adminNavToggle');
+  const tabsNav = document.querySelector('.tabs-nav');
+
+  if (adminNavToggle && tabsNav) {
+    adminNavToggle.addEventListener('click', () => {
+      adminNavToggle.classList.toggle('active');
+      tabsNav.classList.toggle('active');
+    });
+  }
+
+  tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      tabButtons.forEach(b => b.classList.remove('active'));
+      tabPanels.forEach(p => p.classList.remove('active'));
+
+      btn.classList.add('active');
+      const targetId = btn.getAttribute('data-tab');
+      document.getElementById(targetId).classList.add('active');
+
+      if (adminNavToggle && tabsNav) {
+        adminNavToggle.classList.remove('active');
+        tabsNav.classList.remove('active');
+      }
+    });
+  });
+
+
+  // Recurring options change handler
+  const recurringOption = document.getElementById('recurringOption');
+  const weeklyDaysContainer = document.getElementById('weeklyDaysContainer');
+  const monthlyDateContainer = document.getElementById('monthlyDateContainer');
+
+  if (recurringOption) {
+    recurringOption.addEventListener('change', () => {
+      const val = recurringOption.value;
+      weeklyDaysContainer.style.display = val === 'Weekly' ? 'block' : 'none';
+      monthlyDateContainer.style.display = val === 'Monthly' ? 'block' : 'none';
+      
+      const dateContainer = document.getElementById('eventDateContainer');
+      const dateInput = document.getElementById('eventDate');
+      const timeContainer = document.getElementById('lastSaturdayTimeContainer');
+      
+      if (val === 'LastSaturday') {
+        dateContainer.style.display = 'none';
+        dateInput.required = false;
+        timeContainer.style.display = 'block';
+      } else {
+        dateContainer.style.display = 'block';
+        dateInput.required = true;
+        timeContainer.style.display = 'none';
+      }
+    });
+  }
+
+  // Database Load Operations
+  async function loadEvents() {
+    try {
+      const events = await sql.query('SELECT * FROM events ORDER BY event_date ASC');
+      eventsList.innerHTML = events.map(event => {
+        const dateStr = new Date(event.event_date).toLocaleString('en-GB');
+        let recStr = '';
+        if (event.recurring_type && event.recurring_type !== 'None') {
+          if (event.recurring_type === 'Weekly') {
+            recStr = `🔄 Weekly (on ${event.recurring_details})`;
+          } else if (event.recurring_type === 'Monthly') {
+            recStr = `🔄 Monthly (on the ${event.recurring_details}th)`;
+          } else if (event.recurring_type === 'LastSaturday') {
+            recStr = `🔄 Last Saturday of Month`;
+          } else {
+            recStr = `🔄 Daily`;
+          }
+        }
+        return `
+          <div class="data-card event-item" style="display: flex; gap: 1.5rem; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+            <div style="display: flex; gap: 1.5rem; align-items: flex-start; flex: 1; min-width: 250px;">
+              ${event.image_data ? `
+                <div style="width: 80px; height: 80px; overflow: hidden; border-radius: 4px; border: 1px solid rgba(0,0,0,0.1); flex-shrink: 0;">
+                  <img src="${event.image_data}" alt="Event Thumbnail" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+              ` : ''}
+              <div>
+                <h4>${escapeHTML(event.title)}</h4>
+                <p>${escapeHTML(event.description || '')}</p>
+                <span class="meta">📅 ${dateStr} | 📍 ${escapeHTML(event.location || 'N/A')}</span>
+                ${recStr ? `<span class="meta" style="color: var(--crimson); font-weight: 600; margin-top: 0.2rem; display: block;">${escapeHTML(recStr)}</span>` : ''}
+              </div>
+            </div>
+            <div class="action-btn-group" style="display: flex; gap: 0.5rem; flex-shrink: 0;">
+              <button class="action-btn edit" onclick="editEvent(${event.id})">Edit</button>
+              <button class="action-btn delete" onclick="deleteEvent(${event.id})">Delete</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    } catch (err) {
+      console.error(err);
+      eventsList.innerHTML = '<p style="color: red;">Failed to load events from database.</p>';
+    }
+  }
+
+  async function loadPrayerRequests() {
+    try {
+      const requests = await sql.query('SELECT * FROM prayer_requests ORDER BY created_at DESC');
+      
+      const activeRequests = requests.filter(req => !req.is_archived);
+      const archivedRequests = requests.filter(req => req.is_archived);
+
+      // 1. Render Active requests
+      if (activeRequests.length === 0) {
+        prayerList.innerHTML = '<p style="font-style: italic;">No active prayer requests received yet.</p>';
+      } else {
+        prayerList.innerHTML = activeRequests.map(req => {
+          const dateStr = new Date(req.created_at).toLocaleString('en-GB');
+          return `
+            <div class="data-card">
+              <h4>${escapeHTML(req.name)}</h4>
+              <p><strong>Phone:</strong> ${escapeHTML(req.phone || 'N/A')}</p>
+              <p><strong>Address:</strong> ${escapeHTML(req.address || 'N/A')}</p>
+              <div class="prayer-text-block">${escapeHTML(req.request_text)}</div>
+              <span class="meta" style="margin-top: 0.5rem;">Received: ${dateStr}</span>
+              <div class="action-btn-group">
+                <button class="action-btn archive" onclick="archiveRequest(${req.id})">Archive</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // 2. Render Archived requests
+      if (archivedRequests.length === 0) {
+        archiveList.innerHTML = '<p style="font-style: italic;">No archived prayer requests.</p>';
+      } else {
+        archiveList.innerHTML = archivedRequests.map(req => {
+          const dateStr = new Date(req.created_at).toLocaleString('en-GB');
+          return `
+            <div class="data-card" style="opacity: 0.85;">
+              <h4>${escapeHTML(req.name)}</h4>
+              <p><strong>Phone:</strong> ${escapeHTML(req.phone || 'N/A')}</p>
+              <p><strong>Address:</strong> ${escapeHTML(req.address || 'N/A')}</p>
+              <div class="prayer-text-block" style="background-color: #f5f5f5;">${escapeHTML(req.request_text)}</div>
+              <span class="meta" style="margin-top: 0.5rem;">Received: ${dateStr} (Archived)</span>
+              <div class="action-btn-group">
+                <button class="action-btn restore" onclick="restoreRequest(${req.id})">Restore</button>
+                <button class="action-btn delete" onclick="permanentDeleteRequest(${req.id})">Delete Permanently</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+    } catch (err) {
+      console.error(err);
+      prayerList.innerHTML = '<p style="color: red;">Failed to load prayer requests from database.</p>';
+      archiveList.innerHTML = '<p style="color: red;">Failed to load archived prayer requests.</p>';
+    }
+  }
+
+  // Custom Alert & Confirm Popups
+  function showAlert(message, type = 'success') {
+    return new Promise((resolve) => {
+      const overlay = document.getElementById('customAlert');
+      const msgEl = document.getElementById('customAlertMessage');
+      const iconEl = overlay.querySelector('.custom-alert-icon');
+      const btn = document.getElementById('customAlertBtn');
+
+      msgEl.textContent = message;
+      
+      if (type === 'success') {
+        iconEl.textContent = '✨';
+      } else if (type === 'error') {
+        iconEl.textContent = '⚠️';
+      } else {
+        iconEl.textContent = 'ℹ️';
+      }
+
+      overlay.style.display = 'flex';
+      
+      const closeAlert = () => {
+        overlay.style.display = 'none';
+        btn.removeEventListener('click', closeAlert);
+        resolve();
+      };
+      
+      btn.addEventListener('click', closeAlert);
+    });
+  }
+
+  function showConfirm(message) {
+    return new Promise((resolve) => {
+      const overlay = document.getElementById('customConfirm');
+      const msgEl = document.getElementById('customConfirmMessage');
+      const yesBtn = document.getElementById('customConfirmYes');
+      const noBtn = document.getElementById('customConfirmNo');
+
+      msgEl.textContent = message;
+      overlay.style.display = 'flex';
+
+      const handleYes = () => {
+        overlay.style.display = 'none';
+        yesBtn.removeEventListener('click', handleYes);
+        noBtn.removeEventListener('click', handleNo);
+        resolve(true);
+      };
+
+      const handleNo = () => {
+        overlay.style.display = 'none';
+        yesBtn.removeEventListener('click', handleYes);
+        noBtn.removeEventListener('click', handleNo);
+        resolve(false);
+      };
+
+      yesBtn.addEventListener('click', handleYes);
+      noBtn.addEventListener('click', handleNo);
+    });
+  }
+
+  // Add Event Form Handler
+  eventForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const title = document.getElementById('eventTitle').value.trim();
+    const location = document.getElementById('eventLocation').value.trim();
+    const description = document.getElementById('eventDesc').value.trim();
+    const recType = document.getElementById('recurringOption').value;
+    
+    let event_date = '';
+    if (recType === 'LastSaturday') {
+      const timeVal = document.getElementById('lastSaturdayTime').value || '18:00';
+      const [hours, minutes] = timeVal.split(':');
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth();
+      const lastDay = new Date(year, month + 1, 0);
+      while (lastDay.getDay() !== 6) {
+        lastDay.setDate(lastDay.getDate() - 1);
+      }
+      lastDay.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
+      const tzoffset = lastDay.getTimezoneOffset() * 60000;
+      event_date = (new Date(lastDay.getTime() - tzoffset)).toISOString().slice(0, 16);
+    } else {
+      event_date = document.getElementById('eventDate').value;
+    }
+
+    let recDetails = '';
+    if (recType === 'Weekly') {
+      const checkedDays = Array.from(document.querySelectorAll('input[name="weeklyDay"]:checked')).map(el => el.value);
+      if (checkedDays.length === 0) {
+        await showAlert('Please select at least one day for weekly recurrence.', 'error');
+        return;
+      }
+      recDetails = checkedDays.join(', ');
+    } else if (recType === 'Monthly') {
+      const dateVal = document.getElementById('monthlyDate').value;
+      if (!dateVal || dateVal < 1 || dateVal > 31) {
+        await showAlert('Please enter a valid date of the month (1-31).', 'error');
+        return;
+      }
+      recDetails = dateVal;
+    }
+
+    const imageFile = document.getElementById('eventImage').files[0];
+    let imageData = null;
+    
+    const submitBtn = eventForm.querySelector('button[type="submit"]');
+    const formElements = Array.from(eventForm.elements);
+    formElements.forEach(el => el.disabled = true);
+    
+    if (imageFile) {
+      submitBtn.textContent = 'Uploading Image...';
+    } else {
+      submitBtn.textContent = editingEventId ? 'Updating Event...' : 'Adding Event...';
+    }
+
+    try {
+      if (imageFile) {
+        imageData = await readAsDataURL(imageFile);
+        submitBtn.textContent = 'Saving Event...';
+      }
+
+      if (editingEventId) {
+        if (imageData) {
+          await sql.query(
+            'UPDATE events SET title=$1, event_date=$2, description=$3, location=$4, image_data=$5, recurring_type=$6, recurring_details=$7 WHERE id=$8',
+            [title, event_date, description, location, imageData, recType, recDetails, editingEventId]
+          );
+        } else {
+          await sql.query(
+            'UPDATE events SET title=$1, event_date=$2, description=$3, location=$4, recurring_type=$5, recurring_details=$6 WHERE id=$7',
+            [title, event_date, description, location, recType, recDetails, editingEventId]
+          );
+        }
+        await showAlert('Event updated successfully!', 'success');
+      } else {
+        await sql.query(
+          'INSERT INTO events (title, event_date, description, location, image_data, recurring_type, recurring_details) VALUES ($1, $2, $3, $4, $5, $6, $7)',
+          [title, event_date, description, location, imageData, recType, recDetails]
+        );
+        await showAlert('Event added successfully!', 'success');
+      }
+
+      eventForm.reset();
+      editingEventId = null;
+      if (weeklyDaysContainer) weeklyDaysContainer.style.display = 'none';
+      if (monthlyDateContainer) monthlyDateContainer.style.display = 'none';
+      document.querySelector('#add-event-tab .panel-title').textContent = 'Add New Event';
+      eventSubmitBtn.textContent = 'Add Event';
+      cancelEditBtn.style.display = 'none';
+
+      loadEvents();
+
+      // Switch back to current events tab
+      const currentTabBtn = document.querySelector('.tab-btn[data-tab="current-events-tab"]');
+      if (currentTabBtn) currentTabBtn.click();
+
+    } catch (err) {
+      console.error(err);
+      await showAlert(`Error saving event: ${err.message}`, 'error');
+    } finally {
+      formElements.forEach(el => el.disabled = false);
+      submitBtn.disabled = false;
+      submitBtn.textContent = editingEventId ? 'Update Event' : 'Add Event';
+    }
+  });
+
+  // Edit Event Handler
+  async function editEvent(id) {
+    try {
+      const res = await sql.query('SELECT * FROM events WHERE id = $1', [id]);
+      if (res.length === 0) {
+        await showAlert('Event not found.', 'error');
+        return;
+      }
+      const event = res[0];
+      editingEventId = id;
+      
+      // Populate form fields
+      document.getElementById('eventTitle').value = event.title;
+      const date = new Date(event.event_date);
+      const tzoffset = date.getTimezoneOffset() * 60000;
+      const localISOTime = (new Date(date.getTime() - tzoffset)).toISOString().slice(0, 16);
+      document.getElementById('eventDate').value = localISOTime;
+      document.getElementById('eventLocation').value = event.location || '';
+      document.getElementById('eventDesc').value = event.description || '';
+      
+      document.getElementById('recurringOption').value = event.recurring_type || 'None';
+      recurringOption.dispatchEvent(new Event('change'));
+      
+      // Clear checked days
+      document.querySelectorAll('input[name="weeklyDay"]').forEach(cb => cb.checked = false);
+      if (event.recurring_type === 'Weekly' && event.recurring_details) {
+        const days = event.recurring_details.split(', ');
+        document.querySelectorAll('input[name="weeklyDay"]').forEach(cb => {
+          if (days.includes(cb.value)) {
+            cb.checked = true;
+          }
+        });
+      } else if (event.recurring_type === 'Monthly') {
+        document.getElementById('monthlyDate').value = event.recurring_details || '';
+      } else if (event.recurring_type === 'LastSaturday') {
+        const hh = String(date.getHours()).padStart(2, '0');
+        const mm = String(date.getMinutes()).padStart(2, '0');
+        document.getElementById('lastSaturdayTime').value = `${hh}:${mm}`;
+      }
+      
+      // Change form styling and title to indicate Edit Mode
+      document.querySelector('#add-event-tab .panel-title').textContent = 'Edit Event';
+      eventSubmitBtn.textContent = 'Update Event';
+      cancelEditBtn.style.display = 'block';
+      
+      // Switch active tab to Add Event tab
+      const addTabBtn = document.querySelector('.tab-btn[data-tab="add-event-tab"]');
+      if (addTabBtn) addTabBtn.click();
+      
+    } catch (err) {
+      console.error(err);
+      await showAlert(`Error fetching event details: ${err.message}`, 'error');
+    }
+  }
+
+  // Cancel edit handler
+  function cancelEdit() {
+    editingEventId = null;
+    eventForm.reset();
+    weeklyDaysContainer.style.display = 'none';
+    monthlyDateContainer.style.display = 'none';
+    document.querySelector('#add-event-tab .panel-title').textContent = 'Add New Event';
+    eventSubmitBtn.textContent = 'Add Event';
+    cancelEditBtn.style.display = 'none';
+    
+    // Switch active tab back to Current Events tab
+    const currentTabBtn = document.querySelector('.tab-btn[data-tab="current-events-tab"]');
+    if (currentTabBtn) currentTabBtn.click();
+  }
+
+  cancelEditBtn.addEventListener('click', cancelEdit);
+
+  // Delete Event Handler
+  async function deleteEvent(id) {
+    if (!(await showConfirm('Are you sure you want to delete this event?'))) return;
+    try {
+      await sql.query('DELETE FROM events WHERE id = $1', [id]);
+      if (editingEventId === id) {
+        cancelEdit();
+      } else {
+        loadEvents();
+      }
+      await showAlert('Event deleted successfully.', 'success');
+    } catch (err) {
+      console.error(err);
+      await showAlert(`Failed to delete event: ${err.message}`, 'error');
+    }
+  }
+
+  // Archive Prayer Request Handler
+  async function archiveRequest(id) {
+    try {
+      await sql.query('UPDATE prayer_requests SET is_archived = TRUE WHERE id = $1', [id]);
+      loadPrayerRequests();
+      await showAlert('Prayer request archived.', 'success');
+    } catch (err) {
+      console.error(err);
+      await showAlert(`Failed to archive request: ${err.message}`, 'error');
+    }
+  }
+
+  // Restore Prayer Request Handler
+  async function restoreRequest(id) {
+    try {
+      await sql.query('UPDATE prayer_requests SET is_archived = FALSE WHERE id = $1', [id]);
+      loadPrayerRequests();
+      await showAlert('Prayer request restored.', 'success');
+    } catch (err) {
+      console.error(err);
+      await showAlert(`Failed to restore request: ${err.message}`, 'error');
+    }
+  }
+
+  // Permanent Delete Prayer Request Handler
+  async function permanentDeleteRequest(id) {
+    if (!(await showConfirm('Are you sure you want to permanently delete this prayer request? This cannot be undone.'))) return;
+    try {
+      await sql.query('DELETE FROM prayer_requests WHERE id = $1', [id]);
+      loadPrayerRequests();
+      await showAlert('Prayer request permanently deleted.', 'success');
+    } catch (err) {
+      console.error(err);
+      await showAlert(`Failed to delete request: ${err.message}`, 'error');
+    }
+  }
+
+  window.adminGalleryGroups = {};
+  window.adminExpandedSections = {};
+  window.adminCurrentPages = {};
+  window.adminGallerySectionKeys = [];
+  const ADMIN_IMAGES_PER_PAGE = 3;
+
+  window.expandAdminGallerySection = (idx) => {
+    const sec = window.adminGallerySectionKeys[idx];
+    window.adminExpandedSections[sec] = true;
+    window.adminCurrentPages[sec] = 0;
+    renderAdminGallery();
+  };
+
+  window.collapseAdminGallerySection = (idx) => {
+    const sec = window.adminGallerySectionKeys[idx];
+    window.adminExpandedSections[sec] = false;
+    renderAdminGallery();
+  };
+
+  window.changeAdminSectionPage = (idx, page) => {
+    const sec = window.adminGallerySectionKeys[idx];
+    window.adminCurrentPages[sec] = page;
+    renderAdminGallery();
+  };
+
+  function renderAdminGallery() {
+    if (window.adminGallerySectionKeys.length === 0) {
+      galleryAdminList.innerHTML = '<p style="font-style: italic;">No gallery images uploaded yet.</p>';
+      return;
+    }
+
+    galleryAdminList.innerHTML = window.adminGallerySectionKeys.map((sectionName, idx) => {
+      const sectionImages = window.adminGalleryGroups[sectionName];
+      const isExpanded = window.adminExpandedSections[sectionName];
+      const count = sectionImages.length;
+
+      if (!isExpanded) {
+        const img = sectionImages[0];
+        return `
+          <div class="data-card" style="display: flex; align-items: center; gap: 1.5rem; cursor: pointer;" onclick="expandAdminGallerySection(${idx})">
+            <div style="width: 80px; height: 80px; overflow: hidden; border-radius: 4px; border: 1px solid rgba(0,0,0,0.1); position: relative;">
+              <img src="${img.image_data}" alt="Thumbnail" style="width: 100%; height: 100%; object-fit: cover;">
+              ${count > 1 ? `
+                <div style="position: absolute; inset: 0; background: rgba(74, 14, 14, 0.4); display: flex; align-items: center; justify-content: center; color: var(--gold); font-size: 0.9rem; font-weight: 700;">
+                  +${count - 1}
+                </div>
+              ` : ''}
+            </div>
+            <div style="flex-grow: 1;">
+              <h4 style="font-size: 1.1rem; margin-bottom: 0.2rem;">${escapeHTML(sectionName)}</h4>
+              <span class="meta">${count} Image${count > 1 ? 's' : ''} (Click to expand)</span>
+            </div>
+          </div>
+        `;
+      } else {
+        const page = window.adminCurrentPages[sectionName] || 0;
+        const startIdx = page * ADMIN_IMAGES_PER_PAGE;
+        const endIdx = startIdx + ADMIN_IMAGES_PER_PAGE;
+        const pageImages = sectionImages.slice(startIdx, endIdx);
+        const totalPages = Math.ceil(sectionImages.length / ADMIN_IMAGES_PER_PAGE);
+
+        return `
+          <div style="border: 1px solid var(--gold); padding: 1.5rem; margin-bottom: 1.5rem; background: var(--ivory);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; border-bottom: 1px solid rgba(139,26,26,0.1); padding-bottom: 0.5rem;">
+              <h4 style="font-family: 'Cinzel', serif; color: var(--crimson-deep); margin: 0;">${escapeHTML(sectionName)} (${count} Images)</h4>
+              <button class="action-btn" onclick="collapseAdminGallerySection(${idx})" style="border: 1px solid var(--crimson); color: var(--crimson); padding: 0.3rem 0.6rem; cursor: pointer;">Back</button>
+            </div>
+            
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+              ${pageImages.map(img => `
+                <div style="display: flex; align-items: center; gap: 1.5rem; background: white; padding: 1rem; border: 1px solid rgba(0,0,0,0.05);">
+                  <div style="width: 60px; height: 60px; overflow: hidden; border-radius: 4px;">
+                    <img src="${img.image_data}" alt="Thumbnail" style="width: 100%; height: 100%; object-fit: cover;">
+                  </div>
+                  <div style="flex-grow: 1;">
+                    <span class="meta" style="margin: 0;">Uploaded: ${new Date(img.created_at).toLocaleString('en-GB')}</span>
+                  </div>
+                  <button class="action-btn delete" onclick="deleteImage(${img.id})">Delete</button>
+                </div>
+              `).join('')}
+            </div>
+            
+            ${totalPages > 1 ? `
+              <div style="display: flex; justify-content: center; align-items: center; gap: 1.5rem; margin-top: 1.2rem; font-size: 0.8rem;">
+                <button onclick="changeAdminSectionPage(${idx}, ${page - 1})" ${page === 0 ? 'disabled style="opacity: 0.4; cursor: not-allowed;"' : 'style="background: none; border: 1px solid var(--gold); padding: 0.3rem 0.6rem; cursor: pointer;"'}>
+                  &larr; Prev
+                </button>
+                <span>Page ${page + 1} of ${totalPages}</span>
+                <button onclick="changeAdminSectionPage(${idx}, ${page + 1})" ${page >= totalPages - 1 ? 'disabled style="opacity: 0.4; cursor: not-allowed;"' : 'style="background: none; border: 1px solid var(--gold); padding: 0.3rem 0.6rem; cursor: pointer;"'}>
+                  Next &rarr;
+                </button>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }
+    }).join('');
+  }
+
+  // Load Gallery Images for Admin
+  async function loadGalleryImages() {
+    try {
+      const images = await sql.query('SELECT * FROM gallery_images ORDER BY created_at DESC');
+      window.adminGalleryGroups = {};
+      window.adminGallerySectionKeys = [];
+      images.forEach(img => {
+        if (!window.adminGalleryGroups[img.section_name]) {
+          window.adminGalleryGroups[img.section_name] = [];
+          window.adminGallerySectionKeys.push(img.section_name);
+        }
+        window.adminGalleryGroups[img.section_name].push(img);
+      });
+      renderAdminGallery();
+    } catch (err) {
+      console.error(err);
+      galleryAdminList.innerHTML = '<p style="color: red;">Failed to load gallery images.</p>';
+    }
+  }
+
+  const readAsDataURL = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
+  // Handle Image Upload Form Submit
+  imageForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const sectionName = document.getElementById('imageSection').value.trim();
+    const fileInput = document.getElementById('imageFile');
+    const files = fileInput.files;
+
+    if (!files || files.length === 0) {
+      await showAlert('Please select at least one image file.', 'error');
+      return;
+    }
+
+    const uploadCount = files.length;
+    const submitBtn = imageForm.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.textContent = `Uploading (0/${uploadCount})...`;
+
+    try {
+      for (let i = 0; i < uploadCount; i++) {
+        submitBtn.textContent = `Uploading (${i + 1}/${uploadCount})...`;
+        const base64Data = await readAsDataURL(files[i]);
+        await sql.query(
+          'INSERT INTO gallery_images (section_name, image_data) VALUES ($1, $2)',
+          [sectionName, base64Data]
+        );
+      }
+      imageForm.reset();
+      await loadGalleryImages();
+      await showAlert(`${uploadCount} image(s) uploaded successfully.`, 'success');
+    } catch (err) {
+      console.error(err);
+      await showAlert(`Failed to upload image(s): ${err.message}`, 'error');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Upload Image';
+    }
+  });
+
+  // Delete Gallery Image Handler
+  async function deleteImage(id) {
+    if (!(await showConfirm('Are you sure you want to delete this image?'))) return;
+    try {
+      await sql.query('DELETE FROM gallery_images WHERE id = $1', [id]);
+      await loadGalleryImages();
+      await showAlert('Image deleted successfully.', 'success');
+    } catch (err) {
+      console.error(err);
+      await showAlert(`Failed to delete image: ${err.message}`, 'error');
+    }
+  }
+
+  // Bind handlers globally so inline onclick works
+  window.deleteEvent = deleteEvent;
+  window.editEvent = editEvent;
+  window.archiveRequest = archiveRequest;
+  window.restoreRequest = restoreRequest;
+  window.permanentDeleteRequest = permanentDeleteRequest;
+  window.deleteImage = deleteImage;
+  window.expandAdminGallerySection = expandAdminGallerySection;
+  window.collapseAdminGallerySection = collapseAdminGallerySection;
+  window.changeAdminSectionPage = changeAdminSectionPage;
+
+  // HTML escape helper
+  function escapeHTML(str) {
+    return str.replace(/[&<>'"]/g, 
+      tag => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        "'": '&#39;',
+        '"': '&quot;'
+      }[tag] || tag)
+    );
+  }
+</script>
+
+<!-- Custom Modal Dialogs -->
+<div id="customAlert" class="custom-alert-overlay" style="display: none;">
+  <div class="custom-alert-box">
+    <div class="custom-alert-icon">✨</div>
+    <div class="custom-alert-message" id="customAlertMessage">Message here</div>
+    <button class="custom-alert-btn" id="customAlertBtn">OK</button>
+  </div>
+</div>
+
+<div id="customConfirm" class="custom-alert-overlay" style="display: none;">
+  <div class="custom-alert-box">
+    <div class="custom-alert-icon">❓</div>
+    <div class="custom-alert-message" id="customConfirmMessage">Are you sure?</div>
+    <div style="display: flex; gap: 1rem; justify-content: center;">
+      <button class="custom-alert-btn" id="customConfirmYes" style="background: var(--crimson-deep); color: white;">Yes</button>
+      <button class="custom-alert-btn" id="customConfirmNo" style="background: #ccc; color: #333; box-shadow: none;">No</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
