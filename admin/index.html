@@ -742,10 +742,11 @@
 </div>
 
 <script type="module">
-  import { neon } from 'https://cdn.jsdelivr.net/npm/@neondatabase/serverless@1.1.0/+esm';
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-  const connectionString = 'postgresql://neondb_owner:npg_SjMo7p4tWdQV@ep-super-mouse-ab7uyr5w-pooler.eu-west-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require';
-  const sql = neon(connectionString, { disableWarningInBrowsers: true });
+  const supabaseUrl = 'https://yelaxdgdbhyidztbgekc.supabase.co';
+  const supabaseKey = 'sb_publishable_YNnMdH2rOXRJeITVkjBhlg_Kuy3A9hd';
+  const supabase = createClient(supabaseUrl, supabaseKey);
 
   let isAuthenticated = sessionStorage.getItem('adminAuthenticated') === 'true';
   let editingEventId = null;
@@ -764,26 +765,6 @@
   const archiveList = document.getElementById('archiveList');
   const imageForm = document.getElementById('imageForm');
   const galleryAdminList = document.getElementById('galleryAdminList');
-
-  // Database auto migration helper
-  const runMigration = async () => {
-    try {
-      await sql.query('ALTER TABLE prayer_requests ADD COLUMN IF NOT EXISTS is_archived BOOLEAN DEFAULT FALSE;');
-      await sql.query('ALTER TABLE events ADD COLUMN IF NOT EXISTS image_data TEXT;');
-      await sql.query('ALTER TABLE events ADD COLUMN IF NOT EXISTS recurring_type VARCHAR(50);');
-      await sql.query('ALTER TABLE events ADD COLUMN IF NOT EXISTS recurring_details TEXT;');
-      await sql.query(`
-        CREATE TABLE IF NOT EXISTS gallery_images (
-          id SERIAL PRIMARY KEY,
-          section_name VARCHAR(255) NOT NULL,
-          image_data TEXT NOT NULL,
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        );
-      `);
-    } catch (e) {
-      console.warn('Migration failed:', e);
-    }
-  };
 
   // Check authentication status on load
   if (isAuthenticated) {
@@ -819,7 +800,6 @@
   async function showDashboard() {
     loginOverlay.style.display = 'none';
     dashboard.style.display = 'block';
-    await runMigration();
     loadEvents();
     loadPrayerRequests();
     loadGalleryImages();
@@ -890,7 +870,8 @@
   // Database Load Operations
   async function loadEvents() {
     try {
-      const events = await sql.query('SELECT * FROM events ORDER BY event_date ASC');
+      const { data: events, error } = await supabase.from('events').select('*').order('event_date', { ascending: true });
+      if (error) throw error;
       eventsList.innerHTML = events.map(event => {
         const dateStr = new Date(event.event_date).toLocaleString('en-GB');
         let recStr = '';
@@ -935,7 +916,8 @@
 
   async function loadPrayerRequests() {
     try {
-      const requests = await sql.query('SELECT * FROM prayer_requests ORDER BY created_at DESC');
+      const { data: requests, error } = await supabase.from('prayer_requests').select('*').order('created_at', { ascending: false });
+      if (error) throw error;
       
       const activeRequests = requests.filter(req => !req.is_archived);
       const archivedRequests = requests.filter(req => req.is_archived);
@@ -1112,23 +1094,31 @@
       }
 
       if (editingEventId) {
+        const updateData = {
+          title,
+          event_date,
+          description,
+          location,
+          recurring_type: recType,
+          recurring_details: recDetails
+        };
         if (imageData) {
-          await sql.query(
-            'UPDATE events SET title=$1, event_date=$2, description=$3, location=$4, image_data=$5, recurring_type=$6, recurring_details=$7 WHERE id=$8',
-            [title, event_date, description, location, imageData, recType, recDetails, editingEventId]
-          );
-        } else {
-          await sql.query(
-            'UPDATE events SET title=$1, event_date=$2, description=$3, location=$4, recurring_type=$5, recurring_details=$6 WHERE id=$7',
-            [title, event_date, description, location, recType, recDetails, editingEventId]
-          );
+          updateData.image_data = imageData;
         }
+        const { error } = await supabase.from('events').update(updateData).eq('id', editingEventId);
+        if (error) throw error;
         await showAlert('Event updated successfully!', 'success');
       } else {
-        await sql.query(
-          'INSERT INTO events (title, event_date, description, location, image_data, recurring_type, recurring_details) VALUES ($1, $2, $3, $4, $5, $6, $7)',
-          [title, event_date, description, location, imageData, recType, recDetails]
-        );
+        const { error } = await supabase.from('events').insert([{
+          title,
+          event_date,
+          description,
+          location,
+          image_data: imageData,
+          recurring_type: recType,
+          recurring_details: recDetails
+        }]);
+        if (error) throw error;
         await showAlert('Event added successfully!', 'success');
       }
 
@@ -1159,8 +1149,9 @@
   // Edit Event Handler
   async function editEvent(id) {
     try {
-      const res = await sql.query('SELECT * FROM events WHERE id = $1', [id]);
-      if (res.length === 0) {
+      const { data: res, error } = await supabase.from('events').select('*').eq('id', id);
+      if (error) throw error;
+      if (!res || res.length === 0) {
         await showAlert('Event not found.', 'error');
         return;
       }
@@ -1232,7 +1223,8 @@
   async function deleteEvent(id) {
     if (!(await showConfirm('Are you sure you want to delete this event?'))) return;
     try {
-      await sql.query('DELETE FROM events WHERE id = $1', [id]);
+      const { error } = await supabase.from('events').delete().eq('id', id);
+      if (error) throw error;
       if (editingEventId === id) {
         cancelEdit();
       } else {
@@ -1248,7 +1240,8 @@
   // Archive Prayer Request Handler
   async function archiveRequest(id) {
     try {
-      await sql.query('UPDATE prayer_requests SET is_archived = TRUE WHERE id = $1', [id]);
+      const { error } = await supabase.from('prayer_requests').update({ is_archived: true }).eq('id', id);
+      if (error) throw error;
       loadPrayerRequests();
       await showAlert('Prayer request archived.', 'success');
     } catch (err) {
@@ -1260,7 +1253,8 @@
   // Restore Prayer Request Handler
   async function restoreRequest(id) {
     try {
-      await sql.query('UPDATE prayer_requests SET is_archived = FALSE WHERE id = $1', [id]);
+      const { error } = await supabase.from('prayer_requests').update({ is_archived: false }).eq('id', id);
+      if (error) throw error;
       loadPrayerRequests();
       await showAlert('Prayer request restored.', 'success');
     } catch (err) {
@@ -1273,7 +1267,8 @@
   async function permanentDeleteRequest(id) {
     if (!(await showConfirm('Are you sure you want to permanently delete this prayer request? This cannot be undone.'))) return;
     try {
-      await sql.query('DELETE FROM prayer_requests WHERE id = $1', [id]);
+      const { error } = await supabase.from('prayer_requests').delete().eq('id', id);
+      if (error) throw error;
       loadPrayerRequests();
       await showAlert('Prayer request permanently deleted.', 'success');
     } catch (err) {
@@ -1384,7 +1379,8 @@
   // Load Gallery Images for Admin
   async function loadGalleryImages() {
     try {
-      const images = await sql.query('SELECT * FROM gallery_images ORDER BY created_at DESC');
+      const { data: images, error } = await supabase.from('gallery_images').select('*').order('created_at', { ascending: false });
+      if (error) throw error;
       window.adminGalleryGroups = {};
       window.adminGallerySectionKeys = [];
       images.forEach(img => {
@@ -1431,10 +1427,11 @@
       for (let i = 0; i < uploadCount; i++) {
         submitBtn.textContent = `Uploading (${i + 1}/${uploadCount})...`;
         const base64Data = await readAsDataURL(files[i]);
-        await sql.query(
-          'INSERT INTO gallery_images (section_name, image_data) VALUES ($1, $2)',
-          [sectionName, base64Data]
-        );
+        const { error } = await supabase.from('gallery_images').insert([{
+          section_name: sectionName,
+          image_data: base64Data
+        }]);
+        if (error) throw error;
       }
       imageForm.reset();
       await loadGalleryImages();
@@ -1452,7 +1449,8 @@
   async function deleteImage(id) {
     if (!(await showConfirm('Are you sure you want to delete this image?'))) return;
     try {
-      await sql.query('DELETE FROM gallery_images WHERE id = $1', [id]);
+      const { error } = await supabase.from('gallery_images').delete().eq('id', id);
+      if (error) throw error;
       await loadGalleryImages();
       await showAlert('Image deleted successfully.', 'success');
     } catch (err) {
