@@ -1,7 +1,8 @@
-import { neon } from 'https://cdn.jsdelivr.net/npm/@neondatabase/serverless@1.1.0/+esm';
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-const connectionString = 'postgresql://neondb_owner:npg_SjMo7p4tWdQV@ep-super-mouse-ab7uyr5w-pooler.eu-west-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require';
-const sql = neon(connectionString, { disableWarningInBrowsers: true });
+const supabaseUrl = 'https://yelaxdgdbhyidztbgekc.supabase.co';
+const supabaseKey = 'sb_publishable_YNnMdH2rOXRJeITVkjBhlg_Kuy3A9hd';
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 document.addEventListener('DOMContentLoaded', () => {
   // Sticky nav
@@ -109,7 +110,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     try {
-      const events = await sql.query('SELECT * FROM events ORDER BY event_date ASC');
+      const { data: events, error } = await supabase.from('events').select('*').order('event_date', { ascending: true });
+      if (error) throw error;
       
       if (events.length === 0) {
         eventsGrid.innerHTML = `
@@ -204,10 +206,10 @@ document.addEventListener('DOMContentLoaded', () => {
           throw new Error('Prayer request cannot exceed 1000 characters.');
         }
 
-        await sql.query(
-          'INSERT INTO prayer_requests (name, phone, address, request_text) VALUES ($1, $2, $3, $4)',
-          [name, phone, address, request_text]
-        );
+        const { error } = await supabase.from('prayer_requests').insert([
+          { name, phone, address, request_text }
+        ]);
+        if (error) throw error;
 
         formMessage.className = 'form-message success';
         formMessage.textContent = 'Thank you. Your prayer request has been received. We will be praying for you.';
@@ -339,7 +341,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const loadGallery = async () => {
     try {
-      const images = await sql.query('SELECT * FROM gallery_images ORDER BY created_at DESC');
+      const { data: images, error } = await supabase.from('gallery_images').select('*').order('created_at', { ascending: false });
+      if (error) throw error;
       
       window.galleryGroups = {};
       window.gallerySectionKeys = [];
