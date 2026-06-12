@@ -12,25 +12,23 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://yelaxdgdbhy
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_YNnMdH2rOXRJeITVkjBhlg_Kuy3A9hd';
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-// Hardcoded Admin Credentials
-const ADMIN_USER = 'admin@sunnisidecornerstonechurch.org.uk';
-const ADMIN_PASS = 'Admin123';
-
-// Simple check authorization middleware (using standard basic auth headers or custom query/headers)
-const authenticate = (req, res, next) => {
+// Simple check authorization middleware (verifies Supabase JWT access token)
+const authenticate = async (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader) {
     return res.status(401).json({ error: 'Authorization header missing' });
   }
 
   const token = authHeader.split(' ')[1];
-  const decoded = Buffer.from(token, 'base64').toString('utf-8');
-  const [username, password] = decoded.split(':');
-
-  if (username === ADMIN_USER && password === ADMIN_PASS) {
+  try {
+    const { data: { user }, error } = await supabase.auth.getUser(token);
+    if (error || !user) {
+      return res.status(401).json({ error: 'Unauthorized: Invalid token' });
+    }
+    req.user = user;
     next();
-  } else {
-    res.status(403).json({ error: 'Invalid credentials' });
+  } catch (err) {
+    res.status(401).json({ error: 'Unauthorized: Verification failed' });
   }
 };
 
@@ -41,14 +39,18 @@ app.get('/admin', (req, res) => {
 
 // API Routes
 
-// 1. Authenticate Admin
-app.post('/api/login', (req, res) => {
+// 1. Authenticate Admin via Supabase Auth
+app.post('/api/login', async (req, res) => {
   const { username, password } = req.body;
-  if (username === ADMIN_USER && password === ADMIN_PASS) {
-    const token = Buffer.from(`${username}:${password}`).toString('base64');
-    res.json({ success: true, token });
-  } else {
-    res.status(401).json({ success: false, error: 'Invalid username or password' });
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: username,
+      password: password
+    });
+    if (error) throw error;
+    res.json({ success: true, token: data.session.access_token });
+  } catch (err) {
+    res.status(401).json({ success: false, error: err.message });
   }
 });
 
