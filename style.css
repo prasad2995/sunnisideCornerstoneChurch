@@ -52,20 +52,39 @@ body {
   overflow: hidden;
 }
 
-.hero-bg {
+.hero-slider-bg {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(ellipse 80% 60% at 50% 35%, rgba(180, 28, 28, 0.45) 0%, transparent 75%),
-    radial-gradient(ellipse 60% 80% at 15% 85%, rgba(120, 15, 15, 0.7) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 50% at 85% 15%, rgba(212, 175, 55, 0.15) 0%, transparent 55%);
+  z-index: 0;
+  overflow: hidden;
+}
+
+.bg-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background-size: cover;
+  background-position: center;
+  transform: scale(1.05);
+  transition: opacity 1.5s ease-in-out, transform 6s ease-out;
+}
+
+.bg-slide.active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(18, 5, 5, 0.55);
   z-index: 1;
 }
 
 .hero-pattern {
   position: absolute;
   inset: 0;
-  opacity: 0.06;
+  opacity: 0.08;
   background-image:
     repeating-linear-gradient(0deg, var(--gold) 0px, var(--gold) 1px, transparent 1px, transparent 60px),
     repeating-linear-gradient(90deg, var(--gold) 0px, var(--gold) 1px, transparent 1px, transparent 60px);
@@ -131,6 +150,7 @@ body {
   display: block;
   background: linear-gradient(to right, #FFE58F, var(--gold-light), var(--gold));
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-top: 0.2rem;
 }
@@ -150,6 +170,20 @@ body {
   max-width: 650px;
   margin: 0 auto 0.8rem;
   line-height: 1.6;
+}
+
+.service-time-badge {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  color: var(--warm-white);
+  padding: 0.5rem 1.5rem;
+  border-radius: 50px;
+  font-family: 'Cinzel', serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  margin: 1.5rem auto 0;
 }
 
 .hero-ref {

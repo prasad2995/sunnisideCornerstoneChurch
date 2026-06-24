@@ -42,6 +42,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Hero Background Slider Logic
+  const bgSlides = document.querySelectorAll('.bg-slide');
+
+  if (bgSlides.length > 0) {
+    let currentSlide = 0;
+    const intervalTime = 3000;
+
+    const showNextSlide = () => {
+      bgSlides[currentSlide].classList.remove('active');
+      currentSlide = (currentSlide + 1) % bgSlides.length;
+      bgSlides[currentSlide].classList.add('active');
+    };
+
+    setInterval(showNextSlide, intervalTime);
+  }
+
   // Fetch and display Events
   const eventsGrid = document.getElementById('eventsGrid');
   const loadEvents = async () => {
