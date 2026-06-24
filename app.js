@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (bgSlides.length > 0) {
     let currentSlide = 0;
-    const intervalTime = 3000;
+    const intervalTime = 10000;
 
     const showNextSlide = () => {
       bgSlides[currentSlide].classList.remove('active');
